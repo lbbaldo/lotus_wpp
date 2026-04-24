@@ -144,7 +144,7 @@ export const dispatchMessageQueueItem = async (messageQueueId: number): Promise<
       `
       update message_queue
       set
-        status = case when attempts >= max_attempts then 'failed' else 'pending' end,
+        status = (case when attempts >= max_attempts then 'failed' else 'pending' end)::queue_status,
         last_error = $2,
         next_attempt_at = case
           when attempts >= max_attempts then now()
