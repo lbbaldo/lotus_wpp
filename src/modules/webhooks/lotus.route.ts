@@ -4,7 +4,6 @@ import { lotusEventSchema } from "../events/events.schema.js";
 import { verifyHmacSha256, isTimestampInsideSkew } from "../security/hmac.js";
 import { isValidApiKey } from "../security/api-key.js";
 import { pgPool } from "../../shared/db/pg.js";
-import { buildMessageText } from "../messaging/templates.js";
 import { loadRecipientsForEvent } from "../routing/routing.service.js";
 import { enqueueDispatchJob } from "../queue/queue.js";
 
@@ -46,7 +45,7 @@ export const registerLotusWebhookRoute = (app: FastifyInstance): void => {
     }
 
     const event = parsed.data;
-    const idempotencyKey = `${event.event_type}:${event.event_id}`;
+    const idempotencyKey = event.event_id;
 
     const client = await pgPool.connect();
 
@@ -73,11 +72,15 @@ export const registerLotusWebhookRoute = (app: FastifyInstance): void => {
 
       if (!insertedEvent) {
         await client.query("commit");
-        return reply.code(202).send({ status: "ignored_duplicate", event_id: event.event_id });
+        return reply.code(200).send({ status: "ignored_duplicate", event_id: event.event_id });
       }
 
       const recipients = await loadRecipientsForEvent(client, event);
-      const messageText = buildMessageText(event);
+      if (recipients.length === 0) {
+        throw new Error(`no_active_recipients_for_event_type event_type=${event.event_type}`);
+      }
+
+      const messageText = event.message;
 
       const queueIds: number[] = [];
 
