@@ -12,6 +12,7 @@ Microservico em TypeScript para receber eventos do Lotus e enviar alertas via Ev
 ## Endpoints
 
 - `GET /health`
+- `GET /v1/health` (requires `X-Lotus-Key`)
 - `POST /v1/webhooks/lotus/events`
 - `POST /v1/webhooks/evolution` (stub MVP)
 - `POST /v1/admin/reprocess/:messageQueueId` (requires `X-Admin-Key`, optional)
@@ -84,6 +85,31 @@ Arquivo com checklist do que eu preciso do banco Lotus:
 - `docs/DB_INFO_NECESSARIA.md`
 
 Acesso necessario: somente leitura (SELECT).
+
+## Health check para o Lotus
+
+O Lotus pode consultar o status operacional do bot em:
+
+```text
+GET /v1/health
+X-Lotus-Key: <LOTUS_WEBHOOK_API_KEY>
+```
+
+Exemplo de resposta online:
+
+```json
+{
+  "ok": true,
+  "service": "whatsapp-bot",
+  "status": "online",
+  "db": "ok",
+  "redis": "ok",
+  "evolution_api": "ok",
+  "whatsapp_connected": true,
+  "whatsapp_state": "open",
+  "timestamp": "2026-04-25T16:30:00.000Z"
+}
+```
 
 ## Contrato de carga_confirmada (atual)
 
