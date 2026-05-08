@@ -111,7 +111,17 @@ Exemplo de resposta online:
 }
 ```
 
-## Contrato de carga_confirmada (atual)
+## Contrato de eventos Lotus
+
+Eventos aceitos em `event_type`:
+
+- `pedido_novo`
+- `carga_confirmada`
+- `carregamento_concluido`
+
+O texto enviado ao WhatsApp vem no campo `message`.
+
+### carga_confirmada
 
 Campos esperados em `data`:
 

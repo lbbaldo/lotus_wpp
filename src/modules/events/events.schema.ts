@@ -8,7 +8,7 @@ const messageSchema = z
 const envelopeSchema = z
   .object({
     event_id: z.string().min(1),
-    event_type: z.enum(["carga_confirmada", "carregamento_concluido"]),
+    event_type: z.enum(["pedido_novo", "carga_confirmada", "carregamento_concluido"]),
     occurred_at: z.string().datetime(),
     source: z.literal("lotus"),
     tenant_id: z.string().min(1),
