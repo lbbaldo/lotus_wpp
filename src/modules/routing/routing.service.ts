@@ -11,9 +11,11 @@ export const loadRecipientsForEvent = async (client: PoolClient, event: LotusEve
     `
     select target_type, target_id
     from alert_recipients
-    where alert_type = $1 and active = true
+    where tenant_id = $1
+      and alert_type = $2
+      and active = true
     `,
-    [event.event_type]
+    [event.tenant_id, event.event_type]
   );
 
   return result.rows.map((row) => ({ targetType: row.target_type, targetId: row.target_id }));

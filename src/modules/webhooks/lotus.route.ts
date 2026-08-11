@@ -55,17 +55,18 @@ export const registerLotusWebhookRoute = (app: FastifyInstance): void => {
       const insertEventResult = await client.query<{ id: number }>(
         `
         insert into incoming_events (
+          tenant_id,
           event_id,
           event_type,
           idempotency_key,
           payload,
           status
         )
-        values ($1, $2, $3, $4::jsonb, 'accepted')
-        on conflict (idempotency_key) do nothing
+        values ($1, $2, $3, $4, $5::jsonb, 'accepted')
+        on conflict (tenant_id, idempotency_key) do nothing
         returning id
         `,
-        [event.event_id, event.event_type, idempotencyKey, JSON.stringify(event)]
+        [event.tenant_id, event.event_id, event.event_type, idempotencyKey, JSON.stringify(event)]
       );
 
       const insertedEvent = insertEventResult.rows[0];

@@ -121,6 +121,14 @@ Eventos aceitos em `event_type`:
 
 O texto enviado ao WhatsApp vem no campo `message`.
 
+O contexto empresarial é obrigatório e validado pelo par `source`/`tenant_id`:
+
+- `lotus` / `11111111-1111-4111-8111-111111111111`
+- `sodex` / `22222222-2222-4222-8222-222222222222`
+
+`organization_id` é metadado interno da plataforma Lotus e não faz parte do webhook.
+Os destinatários em `alert_recipients` são isolados por `tenant_id`.
+
 ### carga_confirmada
 
 Campos esperados em `data`:
